@@ -1,0 +1,400 @@
+ortools not installed, install it by "pip install ortools==9.1.9490" if you run BEVLaneDet model
+2023-08-20 17:14:53,454 -     INFO - not use cpu bind core
+2023-08-20 17:14:53,474 -     INFO - After filtering min_num_points_in_box:
+2023-08-20 17:14:53,474 -     INFO - After filtering ignored difficulty:
+2023-08-20 17:14:53,625 -     INFO - 
+------------Environment Information-------------
+platform:
+    Linux-5.15.0-79-generic-x86_64-with-glibc2.17
+    gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+    Python - 3.8.17 (default, Jul  5 2023, 21:04:15)  [GCC 11.2.0]
+
+Science Toolkits:
+    cv2 - 4.8.0
+    numpy - 1.24.4
+    numba - 0.57.1
+    pandas - 2.0.3
+    pillow - 10.0.0
+    skimage - 0.21.0
+
+PaddlePaddle:
+    paddle(gpu) - 2.5.0
+    paddle3d - 1.0.0
+    paddleseg - 2.7.0
+    FLAGS_cudnn_deterministic - Not set.
+    FLAGS_cudnn_exhaustive_search - Not set.
+
+CUDA:
+    cudnn - 8201
+    nvcc - Build cuda_11.2.r11.2/compiler.29618528_0
+
+GPUs:
+------------------------------------------------
+2023-08-20 17:14:53,640 -     INFO - 
+---------------Config Information---------------
+batch_size: 2
+export:
+  transforms:
+  - dim: 4
+    type: LoadPointCloud
+    use_dim: 4
+  - max_points_in_voxel: 32
+    max_voxel_num: 16000
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: HardVoxelize
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+iters: 296960
+lr_scheduler:
+  gamma: 0.8
+  learning_rate: 0.0002
+  step_size: 27840
+  type: StepDecay
+model:
+  anchor_area_threshold: 1
+  anchor_configs:
+  - anchor_offsets:
+    - 0.16
+    - -39.52
+    - -1.78
+    anchor_strides:
+    - 0.32
+    - 0.32
+    - 0.0
+    matched_threshold: 0.6
+    rotations:
+    - 0
+    - 1.57
+    sizes:
+    - 1.6
+    - 3.9
+    - 1.56
+    unmatched_threshold: 0.45
+  backbone:
+    downsample_strides:
+    - 2
+    - 2
+    - 2
+    in_channels: 64
+    layer_nums:
+    - 3
+    - 5
+    - 5
+    out_channels:
+    - 64
+    - 128
+    - 256
+    type: SecondBackbone
+  head:
+    box_code_size: 7
+    encode_background_as_zeros: true
+    feature_channels: 384
+    nms_iou_threshold: 0.5
+    nms_post_max_size: 300
+    nms_pre_max_size: 1000
+    nms_score_threshold: 0.05
+    num_anchor_per_loc: 2
+    num_classes: 1
+    prediction_center_limit_range:
+    - 0
+    - -39.68
+    - -5
+    - 69.12
+    - 39.68
+    - 5
+    type: SSDHead
+    use_direction_classifier: true
+  loss:
+    bg_cls_weight: 1.0
+    box_code_size: 7
+    classification_loss:
+      alpha: 0.25
+      gamma: 2.0
+      type: SigmoidFocalClassificationLoss
+    classification_loss_weight: 1.0
+    direction_loss:
+      type: WeightedSoftmaxClassificationLoss
+    direction_loss_weight: 0.2
+    encode_background_as_zeros: true
+    encode_rot_error_by_sin: true
+    fg_cls_weight: 1.0
+    num_classes: 1
+    regression_loss:
+      code_weights:
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      sigma: 3.0
+      type: WeightedSmoothL1RegressionLoss
+    regression_loss_weight: 2.0
+    type: PointPillarsLoss
+    use_direction_classifier: true
+  middle_encoder:
+    in_channels: 64
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: PointPillarsScatter
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+  neck:
+    in_channels:
+    - 64
+    - 128
+    - 256
+    out_channels:
+    - 128
+    - 128
+    - 128
+    type: SecondFPN
+    upsample_strides:
+    - 1
+    - 2
+    - 4
+    use_conv_for_no_stride: false
+  pillar_encoder:
+    feat_channels:
+    - 64
+    in_channels: 4
+    legacy: false
+    max_num_points_in_voxel: 32
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: PillarFeatureNet
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+    with_distance: false
+  type: PointPillars
+  voxelizer:
+    max_num_points_in_voxel: 32
+    max_num_voxels:
+    - 16000
+    - 40000
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: HardVoxelizer
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+optimizer:
+  grad_clip:
+    clip_norm: 10.0
+    type: ClipGradByGlobalNorm
+  type: Adam
+  weight_decay: 0.0001
+train_dataset:
+  class_names:
+  - Car
+  dataset_root: datasets/KITTI
+  mode: train
+  transforms:
+  - dim: 4
+    type: LoadPointCloud
+    use_dim: 4
+  - type: RemoveCameraInvisiblePointsKITTI
+  - class_names:
+    - Car
+    database_anno_path: datasets/KITTI/kitti_train_gt_database/anno_info_train.pkl
+    database_root: datasets/KITTI/
+    ignored_difficulty:
+    - -1
+    max_num_samples_per_class:
+      Car: 15
+    min_num_points_in_box_per_class:
+      Car: 5
+    type: SamplingDatabase
+  - max_num_attempts: 100
+    rotation_range:
+    - -0.15707963267
+    - 0.15707963267
+    translation_std:
+    - 0.25
+    - 0.25
+    - 0.25
+    type: RandomObjectPerturb
+  - type: RandomVerticalFlip
+  - max_rot: 0.78539816
+    min_rot: -0.78539816
+    type: GlobalRotate
+  - max_scale: 1.05
+    min_scale: 0.95
+    type: GlobalScale
+  - translation_std:
+    - 0.2
+    - 0.2
+    - 0.2
+    type: GlobalTranslate
+  - point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: FilterBBoxOutsideRange
+  - type: ShufflePoint
+  - max_points_in_voxel: 32
+    max_voxel_num: 16000
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: HardVoxelize
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+  - anchor_area_threshold: 1
+    anchor_configs:
+    - anchor_offsets:
+      - 0.16
+      - -39.52
+      - -1.78
+      anchor_strides:
+      - 0.32
+      - 0.32
+      - 0.0
+      matched_threshold: 0.6
+      rotations:
+      - 0
+      - 1.57
+      sizes:
+      - 1.6
+      - 3.9
+      - 1.56
+      unmatched_threshold: 0.45
+    output_stride_factor: 2
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: GenerateAnchors
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+  - rpn_batch_size: 512
+    type: Gt2PointPillarsTarget
+  type: KittiPCDataset
+val_dataset:
+  class_names:
+  - Car
+  dataset_root: datasets/KITTI
+  mode: val
+  transforms:
+  - dim: 4
+    type: LoadPointCloud
+    use_dim: 4
+  - type: RemoveCameraInvisiblePointsKITTI
+  - max_points_in_voxel: 32
+    max_voxel_num: 40000
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: HardVoxelize
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+  - anchor_area_threshold: 1
+    anchor_configs:
+    - anchor_offsets:
+      - 0.16
+      - -39.52
+      - -1.78
+      anchor_strides:
+      - 0.32
+      - 0.32
+      - 0.0
+      matched_threshold: 0.6
+      rotations:
+      - 0
+      - 1.57
+      sizes:
+      - 1.6
+      - 3.9
+      - 1.56
+      unmatched_threshold: 0.45
+    output_stride_factor: 2
+    point_cloud_range:
+    - 0
+    - -39.68
+    - -3
+    - 69.12
+    - 39.68
+    - 1
+    type: GenerateAnchors
+    voxel_size:
+    - 0.16
+    - 0.16
+    - 4
+  type: KittiPCDataset
+------------------------------------------------
+W0820 17:14:53.647717 15390 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.5, Driver API Version: 12.2, Runtime API Version: 11.2
+W0820 17:14:53.647742 15390 gpu_resources.cc:149] device: 0, cuDNN Version: 8.2.
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    self.run()
+  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/site-packages/paddle/io/dataloader/dataloader_iter.py", line 604, in _thread_loop
+    batch = self._get_data()
+  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/site-packages/paddle/io/dataloader/dataloader_iter.py", line 752, in _get_data
+    batch.reraise()
+  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/site-packages/paddle/io/dataloader/worker.py", line 178, in reraise
+    raise self.exc_type(msg)
+KeyError: 'DataLoader worker(1) caught KeyError with message:\nTraceback (most recent call last):\n  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/site-packages/paddle/io/dataloader/worker.py", line 363, in _worker_loop\n    batch = fetcher.fetch(indices)\n  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/site-packages/paddle/io/dataloader/fetcher.py", line 78, in fetch\n    data.append(self.dataset[idx])\n  File "/home/feng1909/Paddle3D/paddle3d/datasets/kitti/kitti_pointcloud_det.py", line 62, in __getitem__\n    sample = self.transforms(sample)\n  File "/home/feng1909/Paddle3D/paddle3d/transforms/base.py", line 45, in __call__\n    sample = t(sample)\n  File "/home/feng1909/Paddle3D/paddle3d/transforms/sampling.py", line 278, in __call__\n    samples = self.sampling(sample, num_samples_per_class)\n  File "/home/feng1909/Paddle3D/paddle3d/transforms/sampling.py", line 169, in sampling\n    sampling_annos = self.sampler_per_class[cls_name].sampling(\nKeyError: \'Car\'\n'
+Traceback (most recent call last):
+  File "tools/train.py", line 265, in <module>
+    main(args)
+  File "tools/train.py", line 260, in main
+    trainer.train()
+  File "/home/feng1909/Paddle3D/paddle3d/apis/trainer.py", line 310, in train
+    for sample in self.train_dataloader:
+  File "/home/feng1909/Documents/miniconda3/envs/paddle/lib/python3.8/site-packages/paddle/io/dataloader/dataloader_iter.py", line 825, in __next__
+    self._reader.read_next_list()[0]
+SystemError: (Fatal) Blocking queue is killed because the data reader raises an exception.
+  [Hint: Expected killed_ != true, but received killed_:1 == true:1.] (at ../paddle/fluid/operators/reader/blocking_queue.h:175)
+
